@@ -188,31 +188,10 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe({
-                val time: String = it.let { time -> String.format("%07.3f", time / 100f) }
-                val acc: String = mSensorValuesManager.acc.let { acc ->
-                    String.format(
-                        "%010.6f %010.6f %010.6f",
-                        acc[0],
-                        acc[1],
-                        acc[2]
-                    )
-                }
-                val mag: String = mSensorValuesManager.mag.let { mag ->
-                    String.format(
-                        "%010.6f %010.6f %010.6f",
-                        mag[0],
-                        mag[1],
-                        mag[2]
-                    )
-                }
-                val gyro: String = mSensorValuesManager.gyro.let { gyro ->
-                    String.format(
-                        "%010.6f %010.6f %010.6f",
-                        gyro[0],
-                        gyro[1],
-                        gyro[2]
-                    )
-                }
+                val time: String = it.let { time -> "${time / 100f}" }
+                val acc: String = mSensorValuesManager.acc.let { acc -> "${acc[0]} ${acc[1]} ${acc[2]}" }
+                val mag: String = mSensorValuesManager.mag.let { mag -> "${mag[0]} ${mag[1]} ${mag[2]}" }
+                val gyro: String = mSensorValuesManager.gyro.let { gyro -> "${gyro[0]} ${gyro[1]} ${gyro[2]}" }
 
                 printWriter?.printf("$time $acc $mag $gyro\r\n")
 

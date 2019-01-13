@@ -20,7 +20,7 @@ import java.io.FileNotFoundException
 import java.io.RandomAccessFile
 
 private const val REQ_SELECT_DIR: Int = 1
-val DEFAULT_DIR_PATH: String = Environment.getExternalStorageState() + "/sensor video"
+val DEFAULT_DIR_PATH: String = Environment.getExternalStorageDirectory().toString() + "/sensor video"
 const val PREF_NAME: String = "settings"
 const val PREF_DIR_PATH: String = "dir_path"
 const val PREF_VIDEO_SIZE_INDEX: String = "video_size_index"
