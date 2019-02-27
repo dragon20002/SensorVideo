@@ -6,4 +6,5 @@
     <string name="video_size">영상 크기</string>
     <string name="dir_path">저장 경로</string>
     <string name="select_dir">경로 선택</string>
+    <string name="video_fps">프레임레이트</string>
 </resources>

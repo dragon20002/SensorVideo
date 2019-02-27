@@ -53,6 +53,7 @@ class RecorderManager(
     private lateinit var videoSize: Size
     var dirpath: String = DEFAULT_DIR_PATH
     var videoSizeIndex: Int = 0
+    var videoFps: Int = 24
     var isRecordingVideo = false
     private var backgroundThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
@@ -269,7 +270,8 @@ class RecorderManager(
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(nextVideoAbsolutePath)
             setVideoEncodingBitRate(10000000)
-            setVideoFrameRate(30)
+            setCaptureRate(videoFps.toDouble())
+            setVideoFrameRate(videoFps)
             setVideoSize(videoSize.width, videoSize.height)
             setVideoEncoder(MediaRecorder.VideoEncoder.H264)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)

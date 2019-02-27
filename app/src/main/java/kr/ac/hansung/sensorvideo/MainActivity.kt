@@ -166,6 +166,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).apply {
                     this.getString(PREF_DIR_PATH, DEFAULT_DIR_PATH)?.let { dirpath = it }
                     videoSizeIndex = getInt(PREF_VIDEO_SIZE_INDEX, 0)
+                    videoFps = getInt(PREF_VIDEO_FPS, 24)
                 }
 
                 rotation = windowManager.defaultDisplay.rotation

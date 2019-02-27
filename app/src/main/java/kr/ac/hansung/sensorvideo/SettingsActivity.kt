@@ -24,14 +24,17 @@ val DEFAULT_DIR_PATH: String = Environment.getExternalStorageDirectory().toStrin
 const val PREF_NAME: String = "settings"
 const val PREF_DIR_PATH: String = "dir_path"
 const val PREF_VIDEO_SIZE_INDEX: String = "video_size_index"
+const val PREF_VIDEO_FPS: String = "video_fps"
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var mTxtDirPath: TextView
     private lateinit var mBtnDirPath: ImageButton
     private lateinit var mSpnVideoSize: Spinner
+    private lateinit var mSpnVideoFps: Spinner
 
     private lateinit var videoSizeArray: Array<Size>
+    private val videoFpsArray: Array<Int> = arrayOf(10, 15, 24, 30)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,7 @@ class SettingsActivity : AppCompatActivity() {
         mTxtDirPath = findViewById(R.id.text_dir_path)
         mBtnDirPath = findViewById(R.id.button_dir_path)
         mSpnVideoSize = findViewById(R.id.spinner_video_size)
+        mSpnVideoFps = findViewById(R.id.spinner_video_fps)
 
         /* Get Available Video Size List */
         val manager: CameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
@@ -53,20 +57,31 @@ class SettingsActivity : AppCompatActivity() {
             ?: throw RuntimeException("Cannot get available preview/video sizes")
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         videoSizeArray = map.getOutputSizes(MediaRecorder::class.java)
-        val spnDataSet: Array<String> = Array(videoSizeArray.size) {
+        val spnVideoSizeDataSet: Array<String> = Array(videoSizeArray.size) {
             "${videoSizeArray[it].width} x ${videoSizeArray[it].height}"
         }
         mSpnVideoSize.adapter =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spnDataSet)
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spnVideoSizeDataSet)
+        val spnVideoFpsDataSet: Array<String> = Array(videoFpsArray.size) { "${videoFpsArray[it]}" }
+        mSpnVideoFps.adapter =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spnVideoFpsDataSet)
 
         /* Get User Preference */
         getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).apply {
             val dirPath: String? = getString(PREF_DIR_PATH, DEFAULT_DIR_PATH)
             val videoSizeIndex: Int? = getInt(PREF_VIDEO_SIZE_INDEX, 0)
+            val videoFpsIndex: Int? = getInt(PREF_VIDEO_FPS, 24)
 
             dirPath?.let { mTxtDirPath.text = it }
             if (videoSizeArray.isNotEmpty()) {
                 videoSizeIndex?.let { mSpnVideoSize.setSelection(it) }
+            }
+
+            videoFpsIndex?.let {
+                videoFpsArray.forEachIndexed { index, fps ->
+                    if (it == fps)
+                        mSpnVideoFps.setSelection(index)
+                }
             }
         }
 
@@ -82,12 +97,14 @@ class SettingsActivity : AppCompatActivity() {
         val videoSizeIndex: Int? = if (videoSizeArray.isNotEmpty()) {
             mSpnVideoSize.selectedItemPosition
         } else null
+        val videoFps: Int = videoFpsArray[mSpnVideoFps.selectedItemPosition]
 
-        getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().apply {
-            dirPath?.let { putString(PREF_DIR_PATH, it) }
-            videoSizeIndex?.let { putInt(PREF_VIDEO_SIZE_INDEX, it) }
-            apply()
-        }
+            getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().apply {
+                dirPath?.let { putString(PREF_DIR_PATH, it) }
+                videoSizeIndex?.let { putInt(PREF_VIDEO_SIZE_INDEX, it) }
+                putInt(PREF_VIDEO_FPS, videoFps)
+                apply()
+            }
 
         setResult(RESULT_OK)
         super.onBackPressed()
