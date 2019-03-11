@@ -186,7 +186,7 @@ class RecorderManager(
 
                     override fun onConfigured(session: CameraCaptureSession) {
                         captureSession = session
-                        updatePreview()
+                        updatePreview(true)
                     }
 
                     override fun onConfigureFailed(session: CameraCaptureSession) {}
@@ -201,11 +201,11 @@ class RecorderManager(
     /**
      * Update the camera preview. [startPreview] needs to be called in advance.
      */
-    private fun updatePreview() {
+    private fun updatePreview(autofocus: Boolean) {
         if (cameraDevice == null) return
 
         try {
-            setUpCaptureRequestBuilder(previewRequestBuilder)
+            setUpCaptureRequestBuilder(previewRequestBuilder, autofocus)
             HandlerThread("CameraPreview").start()
             captureSession?.setRepeatingRequest(
                 previewRequestBuilder.build(),
@@ -217,8 +217,12 @@ class RecorderManager(
 
     }
 
-    private fun setUpCaptureRequestBuilder(builder: CaptureRequest.Builder?) {
-        builder?.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
+    private fun setUpCaptureRequestBuilder(builder: CaptureRequest.Builder?, autofocus: Boolean) {
+        if (autofocus) {
+            builder?.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
+        } else {
+            builder?.set(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_AF_MODE_OFF)
+        }
     }
 
     /**
@@ -309,8 +313,8 @@ class RecorderManager(
 
                     override fun onConfigured(cameraCaptureSession: CameraCaptureSession) {
                         captureSession = cameraCaptureSession
-                        updatePreview()
                         isRecordingVideo = true
+                        updatePreview(false)
                         mediaRecorder?.start()
                         callback(true)
                     }
