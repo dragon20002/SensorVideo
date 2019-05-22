@@ -138,7 +138,7 @@ class RecorderManager(
             )
 
             textureView.setAspectRatio(previewSize.width, previewSize.height)
-            textureView.setAspectRatio(previewSize.height, previewSize.width) //portrait
+//            textureView.setAspectRatio(previewSize.height, previewSize.width) //portrait
             configureTransform(width, height)
             mediaRecorder = MediaRecorder()
             manager.openCamera(cameraId, stateCallback, null)
@@ -289,6 +289,7 @@ class RecorderManager(
         try {
             closePreviewSession()
             setUpMediaRecorder()
+
             val texture = textureView.surfaceTexture.apply {
                 setDefaultBufferSize(previewSize.width, previewSize.height)
             }
@@ -296,11 +297,12 @@ class RecorderManager(
             // Set up Surface for camera preview and MediaRecorder
             val previewSurface = Surface(texture)
             val recorderSurface = mediaRecorder!!.surface
+
             val surfaces = ArrayList<Surface>().apply {
                 add(previewSurface)
                 add(recorderSurface)
             }
-            previewRequestBuilder = cameraDevice!!.createCaptureRequest(TEMPLATE_RECORD).apply {
+            previewRequestBuilder = cameraDevice!!.createCaptureRequest(TEMPLATE_PREVIEW).apply {
                 addTarget(previewSurface)
                 addTarget(recorderSurface)
             }

@@ -89,14 +89,14 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                     runOnUiThread {
                         progressCircular.visibility = View.GONE
                         if (success) {
-                            startWriteFile()
+                            startWriteSensorFile()
                             mBtnRecord.setImageResource(R.drawable.ic_save_black_48dp)
                         }
                     }
                 }
             } else {
                 mBtnRecord.setImageResource(R.drawable.ic_camera_black_48dp)
-                stopWriteFile()
+                stopWriteSensorFile()
                 mRecorderManager.stopRecordingVideo()
             }
         }
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     override fun onPause() {
         if (mRecorderManager.isRecordingVideo) {
             mBtnRecord.setImageResource(R.drawable.ic_camera_black_48dp)
-            stopWriteFile()
+            stopWriteSensorFile()
             mRecorderManager.stopRecordingVideo()
         }
         mRecorderManager.closeCamera()
@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun startWriteFile() {
+    private fun startWriteSensorFile() {
         mSensorValuesManager.registerListener()
         val printWriter = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
             .getString(PREF_DIR_PATH, DEFAULT_DIR_PATH)?.let {
@@ -206,7 +206,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         mTxtTime.text = "0.0 sec"
     }
 
-    private fun stopWriteFile() {
+    private fun stopWriteSensorFile() {
         mDisposable?.dispose()
         mDisposable = null
         mSensorValuesManager.unregisterListener()
